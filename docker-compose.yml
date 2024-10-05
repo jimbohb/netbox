@@ -1,0 +1,77 @@
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydb
+    ports:
+      - "5432:5432"
+    networks:
+      - netbox-network
+    volumes:
+      - ../postgres-data:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "8080:80"
+    networks:
+      - netbox-network
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - netbox-network
+
+  django:
+    build:
+      context: ./
+      dockerfile: Dockerfile.python
+    restart: unless-stopped
+    container_name: netbox-app
+    stdin_open: true
+    tty: true
+    command: >
+      bash -c "echo Start ;
+      bash"
+    volumes:
+      - ./netbox:/netbox
+    working_dir: /netbox
+    ports:
+      - "8000:8000"
+    networks:
+      - netbox-network
+    depends_on:
+      - postgres
+      - redis
+
+  nginx:
+    build:
+      dockerfile: Dockerfile.nginx
+    restart: unless-stopped
+    container_name: nginx_webserver
+    networks:
+      - netbox-network
+    ports:
+      - 80:80
+    volumes:
+      - ./netbox/static:/usr/share/nginx/html/static/
+      - ./nginx/:/etc/nginx/conf.d/
+
+volumes:
+    pgadmin-data:
+
+networks:
+  netbox-network:
+    driver: bridge

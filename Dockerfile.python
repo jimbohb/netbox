@@ -1,0 +1,18 @@
+FROM python:latest
+
+### 1. Set environment variables
+# ENV PYTHONUNBUFFERED 1
+# ENV PYTHONDONTWRITEBYTECODE 1
+# ENV DOCKERIZE_VERSION v0.7.0
+
+RUN mkdir /netbox
+COPY ./requirements.txt /netbox/
+WORKDIR /netbox
+
+RUN set -e; \
+    /usr/local/bin/python -m pip install --upgrade pip ;\
+    python -m pip install --default-timeout=100 -r /netbox/requirements.txt ;
+
+# RUN apt-get update && apt-get -y install cron
+
+EXPOSE 8000

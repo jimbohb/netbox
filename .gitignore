@@ -19,6 +19,8 @@ yarn-error.log*
 local_requirements.txt
 local_settings.py
 !upgrade.sh
+!pc_test_docker_up.sh
+!pc_test_docker_down.sh
 fabfile.py
 gunicorn.py
 uwsgi.ini
