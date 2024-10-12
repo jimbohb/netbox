@@ -21,6 +21,8 @@ local_settings.py
 !upgrade.sh
 !pc_test_docker_up.sh
 !pc_test_docker_down.sh
+!bbbhhh_docker_up.sh
+!bbbhhh_docker_down.sh
 fabfile.py
 gunicorn.py
 uwsgi.ini
